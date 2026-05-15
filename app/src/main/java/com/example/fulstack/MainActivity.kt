@@ -11,5 +11,6 @@ class MainActivity : AppCompatActivity() {
         // Сразу переходим на экран списка объявлений
         startActivity(Intent(this, ReadActivity::class.java))
         finish() // чтобы MainActivity не оставалась в стеке
+//lalaal
     }
 }
