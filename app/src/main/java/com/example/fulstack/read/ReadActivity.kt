@@ -1,14 +1,17 @@
 package com.example.fulstack.read
 
-
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.fulstack.LoginActivity
 import com.example.fulstack.R
 
 class ReadActivity : AppCompatActivity() {
@@ -21,25 +24,65 @@ class ReadActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_read)
 
-        // RecyclerView
         val recyclerView = findViewById<RecyclerView>(R.id.rv_products)
         adapter = ProductAdapter(allProducts)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
-        // Счётчик
         tvCount = findViewById(R.id.tv_count)
         updateCount(allProducts.size)
 
-        // Поиск
         val etSearch = findViewById<EditText>(R.id.et_search)
         etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
             override fun afterTextChanged(s: Editable?) {
                 filterProducts(s.toString())
             }
         })
+
+        val navHome = findViewById<LinearLayout>(R.id.navHome)
+        val navFavorite = findViewById<LinearLayout>(R.id.navFavorite)
+        val navAdd = findViewById<LinearLayout>(R.id.navAdd)
+        val navProfile = findViewById<LinearLayout>(R.id.navProfile)
+
+        navHome.setOnClickListener {
+            Toast.makeText(this, "Главная", Toast.LENGTH_SHORT).show()
+        }
+
+        navFavorite.setOnClickListener {
+            if (isLoggedIn()) {
+                Toast.makeText(this, "Избранное", Toast.LENGTH_SHORT).show()
+            } else {
+                openLogin()
+            }
+        }
+
+        navAdd.setOnClickListener {
+            if (isLoggedIn()) {
+                Toast.makeText(this, "Добавить объявление", Toast.LENGTH_SHORT).show()
+            } else {
+                openLogin()
+            }
+        }
+
+        navProfile.setOnClickListener {
+            if (isLoggedIn()) {
+                Toast.makeText(this, "Профиль", Toast.LENGTH_SHORT).show()
+            } else {
+                openLogin()
+            }
+        }
+    }
+
+    private fun openLogin() {
+        startActivity(Intent(this, LoginActivity::class.java))
+    }
+
+    private fun isLoggedIn(): Boolean {
+        val prefs = getSharedPreferences("user", MODE_PRIVATE)
+        return prefs.getBoolean("isLoggedIn", false)
     }
 
     private fun filterProducts(query: String) {
@@ -52,6 +95,7 @@ class ReadActivity : AppCompatActivity() {
                         it.location.contains(query, ignoreCase = true)
             }
         }
+
         adapter.updateList(filtered)
         updateCount(filtered.size)
     }
@@ -59,7 +103,6 @@ class ReadActivity : AppCompatActivity() {
     private fun updateCount(count: Int) {
         tvCount.text = "Найдено объявлений: $count"
     }
-
 
     private fun getMockData(): List<Product> = listOf(
         Product(1, "iPhone 13 Pro 256GB", "45 000", "Телефоны", "Бишкек, Первомайский р-н",
