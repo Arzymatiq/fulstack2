@@ -1,11 +1,16 @@
 package com.example.fulstack.read
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Product(
     val id: Int,
-    val title: String,
-    val price: String,
+    var title: String,
+    var price: String,
     val category: String,
     val location: String,
-    val description: String,
-    val sellerName: String
-)
+    var description: String,
+    val sellerName: String,
+    var imageUri: String? = null
+) : Parcelable

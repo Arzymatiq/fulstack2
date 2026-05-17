@@ -10,47 +10,45 @@ import com.example.fulstack.R
 
 class ProductAdapter(
     private var products: List<Product>
-) : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvTitle: TextView    = view.findViewById(R.id.tv_title)
-        val tvPrice: TextView    = view.findViewById(R.id.tv_price)
-        val tvCategory: TextView = view.findViewById(R.id.tv_category)
-        val tvLocation: TextView = view.findViewById(R.id.tv_location)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_product, parent, false)
+        return ProductViewHolder(view)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_product, parent, false)
-        return ViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val product = products[position]
-        holder.tvTitle.text    = product.title
-        holder.tvPrice.text    = "${product.price} сом"
-        holder.tvCategory.text = product.category
-        holder.tvLocation.text = "📍 ${product.location}"
+        holder.bind(product)
 
-        // ← вот этого не было
         holder.itemView.setOnClickListener {
             val context = holder.itemView.context
             val intent = Intent(context, DetailActivity::class.java).apply {
-                putExtra("title",       product.title)
-                putExtra("price",       product.price)
-                putExtra("category",    product.category)
-                putExtra("description", product.description)
-                putExtra("location",    product.location)
-                putExtra("sellerName",  product.sellerName)
+                // Передаем весь объект (нужно, чтобы в Product.kt была аннотация @Parcelize)
+                putExtra("product", product)
             }
             context.startActivity(intent)
         }
     }
 
-    override fun getItemCount() = products.size
+    override fun getItemCount(): Int = products.size
 
     fun updateList(newList: List<Product>) {
         products = newList
         notifyDataSetChanged()
+    }
+
+    class ProductViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val title: TextView = view.findViewById(R.id.tv_title)
+        private val price: TextView = view.findViewById(R.id.tv_price)
+        private val category: TextView = view.findViewById(R.id.tv_category)
+        private val location: TextView = view.findViewById(R.id.tv_location)
+
+        fun bind(product: Product) {
+            title.text = product.title
+            price.text = "${product.price} сом"
+            category.text = product.category
+            location.text = "📍 ${product.location}"
+        }
     }
 }

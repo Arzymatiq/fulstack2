@@ -8,8 +8,8 @@ import com.example.fulstack.read.ReadActivity
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Сразу переходим на экран списка объявлений
+        //setContentView(R.layout.item_product)
         startActivity(Intent(this, ReadActivity::class.java))
-        finish() // чтобы MainActivity не оставалась в стеке
+        finish()
     }
 }

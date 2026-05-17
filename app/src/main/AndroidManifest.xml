@@ -38,6 +38,8 @@
             android:name=".read.DetailActivity"
             android:exported="false"
             android:theme="@style/Theme.Fulstack" />
+        <activity android:name=".read.EditProductActivity" />
+        <activity android:name=".create.CreateProductActivity" android:exported="false" />
 
 
     </application>
