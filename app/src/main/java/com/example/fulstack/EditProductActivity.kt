@@ -26,7 +26,7 @@ class EditProductActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
 
-        product = intent.getSerializableExtra("product") as Product
+        product = intent.getParcelableExtra<Product>("product")!!
 
         val etTitle = findViewById<EditText>(R.id.et_edit_title)
         val etPrice = findViewById<EditText>(R.id.et_edit_price)

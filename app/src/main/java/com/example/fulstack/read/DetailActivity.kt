@@ -17,7 +17,7 @@ class DetailActivity : AppCompatActivity() {
     // 1. Объявляем launcher здесь (вне onCreate)
     private val editLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val updated = result.data?.getSerializableExtra("updated_product") as? Product
+            val updated = result.data?.getParcelableExtra<Product>("updated_product")
             updated?.let {
                 // Обновляем текст и фото на экране после редактирования
                 findViewById<TextView>(R.id.detail_title).text = it.title
