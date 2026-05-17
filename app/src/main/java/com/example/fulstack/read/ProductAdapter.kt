@@ -32,7 +32,6 @@ class ProductAdapter(
         holder.tvCategory.text = product.category
         holder.tvLocation.text = "📍 ${product.location}"
 
-        // ← вот этого не было
         holder.itemView.setOnClickListener {
             val context = holder.itemView.context
             val intent = Intent(context, DetailActivity::class.java).apply {

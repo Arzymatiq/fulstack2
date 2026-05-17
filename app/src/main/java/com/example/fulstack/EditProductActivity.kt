@@ -44,19 +44,26 @@ class EditProductActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.btn_save_changes).setOnClickListener {
-            // Обновляем объект
+            // 1. Обновляем текстовые данные в объекте product
             product.title = etTitle.text.toString()
             product.price = etPrice.text.toString()
             product.description = etDesc.text.toString()
+
+            // 2. Если выбрали новое фото, сохраняем его путь в объект
             if (selectedImageUri != null) {
                 product.imageUri = selectedImageUri.toString()
             }
 
-            // Возвращаем результат назад
+            // 3. Возвращаем обновленный объект назад в DetailActivity
+            val intent = Intent()
+            intent.putExtra("updated_product", product) // ключ должен совпадать с тем, что в DetailActivity
+            setResult(Activity.RESULT_OK, intent)
+            finish()
+        }
+
             val intent = Intent()
             intent.putExtra("updated_product", product)
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
     }
-}

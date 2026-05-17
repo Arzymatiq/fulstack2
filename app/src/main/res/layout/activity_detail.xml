@@ -162,16 +162,6 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <Button
-                android:id="@+id/btn_edit"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:layout_marginBottom="8dp"
-                android:backgroundTint="#4CAF50"
-                android:text="Редактировать товар"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp" />
-
             <!-- Кнопка -->
             <Button
                 android:layout_width="match_parent"
