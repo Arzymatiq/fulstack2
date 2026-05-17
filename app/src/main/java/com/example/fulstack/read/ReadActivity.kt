@@ -18,7 +18,8 @@ class ReadActivity : AppCompatActivity() {
 
     private lateinit var adapter: ProductAdapter
     private lateinit var tvCount: TextView
-    private var allProducts = getMockData().toMutableList()
+
+    private var allProducts = ProductRepository.getAll().toMutableList()
 
     private val createProductLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -26,9 +27,10 @@ class ReadActivity : AppCompatActivity() {
         if (result.resultCode == RESULT_OK) {
             val newProduct = result.data?.getParcelableExtra<Product>("new_product")
             newProduct?.let {
-                allProducts.add(0, it) // Добавляем в начало списка
-                adapter.updateList(allProducts) // Обновляем адаптер
-                updateCount(allProducts.size)
+
+                ProductRepository.add(it)
+
+                refreshData()
             }
         }
     }
@@ -40,7 +42,7 @@ class ReadActivity : AppCompatActivity() {
         val btnPlus = findViewById<Button>(R.id.btnCreateProduct)
         btnPlus.setOnClickListener {
             val intent = Intent(this, CreateProductActivity::class.java)
-            createProductLauncher.launch(intent) // Запуск через лаунчер
+            createProductLauncher.launch(intent)
         }
 
         val recyclerView = findViewById<RecyclerView>(R.id.rv_products)
@@ -59,9 +61,22 @@ class ReadActivity : AppCompatActivity() {
         })
     }
 
+    override fun onResume() {
+        super.onResume()
+        refreshData()
+    }
+
+    private fun refreshData() {
+        allProducts = ProductRepository.getAll().toMutableList()
+        adapter.updateList(allProducts)
+        updateCount(allProducts.size)
+    }
+
     private fun filterProducts(query: String) {
-        val filtered = if (query.isEmpty()) allProducts else {
-            allProducts.filter { it.title.contains(query, ignoreCase = true) }
+        val filtered = if (query.isEmpty()) {
+            ProductRepository.getAll()
+        } else {
+            ProductRepository.getAll().filter { it.title.contains(query, ignoreCase = true) }
         }
         adapter.updateList(filtered)
         updateCount(filtered.size)
@@ -70,8 +85,4 @@ class ReadActivity : AppCompatActivity() {
     private fun updateCount(count: Int) {
         tvCount.text = "Найдено объявлений: $count"
     }
-
-    private fun getMockData(): List<Product> = listOf(
-        Product(1, "iPhone 13", "45 000", "Телефоны", "Бишкек", "Идеал", "Азиз")
-    )
 }

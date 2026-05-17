@@ -6,11 +6,11 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Product(
     val id: Int,
-    var title: String,      // var, чтобы можно было редактировать
-    var price: String,      // var
+    var title: String,
+    var price: String,
     val category: String,
     val location: String,
-    var description: String, // var
+    var description: String,
     val sellerName: String,
-    var imageUri: String? = null // добавьте это поле, если используете фото
+    var imageUri: String? = null
 ) : Parcelable
