@@ -1,5 +1,6 @@
 package com.example.fulstack.read
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -17,12 +18,17 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
 
-        val productFromIntent = intent.getParcelableExtra<Product>("product")
-        if (productFromIntent == null) {
+
+        val product = intent.getParcelableExtra<Product>("product")
+        if (product == null) {
             finish()
             return
         }
-        currentProduct = productFromIntent
+        currentProduct = product
+
+
+        displayProduct()
+
 
         findViewById<Button>(R.id.btn_edit).setOnClickListener {
             val intent = Intent(this, EditProductActivity::class.java)
@@ -30,35 +36,33 @@ class DetailActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        findViewById<TextView>(R.id.btn_back).setOnClickListener {
-            finish()
-        }
-
-        updateUI(currentProduct)
+        findViewById<TextView>(R.id.btn_back).setOnClickListener { finish() }
     }
+
 
     override fun onResume() {
         super.onResume()
-        // Берем актуальную версию этого товара из нашего репозитория по ID
-        val updatedProduct = ProductRepository.getAll().find { it.id == currentProduct.id }
 
-        updatedProduct?.let {
-            currentProduct = it
-            updateUI(it)
+        val updatedProduct = ProductRepository.getAll().find { it.id == currentProduct.id }
+        if (updatedProduct != null) {
+            currentProduct = updatedProduct
+            displayProduct()
+        } else {
+
+            finish()
         }
     }
 
-    private fun updateUI(product: Product) {
-        findViewById<TextView>(R.id.detail_title).text = product.title
-        findViewById<TextView>(R.id.detail_price).text = "${product.price} сом"
-        findViewById<TextView>(R.id.detail_category).text = product.category
-        findViewById<TextView>(R.id.detail_description).text = product.description
-        findViewById<TextView>(R.id.detail_location).text = "📍 ${product.location}"
-        findViewById<TextView>(R.id.detail_seller).text = "👤 ${product.sellerName}"
+    private fun displayProduct() {
+        findViewById<TextView>(R.id.detail_title).text = currentProduct.title
+        findViewById<TextView>(R.id.detail_price).text = "${currentProduct.price} сом"
+        findViewById<TextView>(R.id.detail_description).text = currentProduct.description
+        findViewById<TextView>(R.id.detail_category).text = currentProduct.category
+        findViewById<TextView>(R.id.detail_location).text = "📍 ${currentProduct.location}"
+        findViewById<TextView>(R.id.detail_seller).text = "👤 ${currentProduct.sellerName}"
 
-        val imageView = findViewById<ImageView>(R.id.detail_image)
-        if (product.imageUri != null) {
-            imageView.setImageURI(Uri.parse(product.imageUri))
+        currentProduct.imageUri?.let {
+            findViewById<ImageView>(R.id.detail_image).setImageURI(Uri.parse(it))
         }
     }
 }

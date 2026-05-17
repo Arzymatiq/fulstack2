@@ -64,6 +64,13 @@
             android:backgroundTint="#FF6B00"
             android:layout_marginTop="24dp"
             android:textColor="#FFFFFF"/>
+        <Button
+            android:id="@+id/btnDeleteProduct"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Удалить товар"
+            android:backgroundTint="#FF0000"
+            android:textColor="#FFFFFF" />
 
     </LinearLayout>
 </ScrollView>

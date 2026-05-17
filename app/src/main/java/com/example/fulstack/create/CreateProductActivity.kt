@@ -1,6 +1,5 @@
 package com.example.fulstack.create
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -8,6 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fulstack.R
 import com.example.fulstack.read.Product
+import com.example.fulstack.read.ProductRepository // Импортируем репозиторий
 
 class CreateProductActivity : AppCompatActivity() {
 
@@ -21,13 +21,13 @@ class CreateProductActivity : AppCompatActivity() {
         val btnSave = findViewById<Button>(R.id.btnSave)
 
         btnSave.setOnClickListener {
-            val title = etTitle.text.toString()
-            val price = etPrice.text.toString()
-            val phone = etPhone.text.toString()
+            val title = etTitle.text.toString().trim()
+            val price = etPrice.text.toString().trim()
+            val phone = etPhone.text.toString().trim()
 
             if (title.isNotEmpty() && price.isNotEmpty()) {
                 val newProduct = Product(
-                    id = System.currentTimeMillis().toInt(),
+                    id = (System.currentTimeMillis() % Int.MAX_VALUE).toInt(), // Безопасный уникальный ID
                     title = title,
                     price = price,
                     category = "Новое",
@@ -36,9 +36,10 @@ class CreateProductActivity : AppCompatActivity() {
                     sellerName = "Я"
                 )
 
-                val resultIntent = Intent()
-                resultIntent.putExtra("new_product", newProduct)
-                setResult(RESULT_OK, resultIntent)
+                ProductRepository.add(newProduct)
+
+                // 3. Сообщаем пользователю и закрываем экран
+                Toast.makeText(this, "Товар добавлен!", Toast.LENGTH_SHORT).show()
                 finish()
             } else {
                 Toast.makeText(this, "Заполните название и цену", Toast.LENGTH_SHORT).show()

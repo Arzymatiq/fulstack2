@@ -17,4 +17,8 @@ object ProductRepository {
             products[index] = updatedProduct
         }
     }
+
+    fun delete(id: Int) {
+        products.removeAll { it.id == id } // Теперь товар действительно будет удален из памяти
+    }
 }

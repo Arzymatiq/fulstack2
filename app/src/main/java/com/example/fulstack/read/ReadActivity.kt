@@ -7,7 +7,6 @@ import android.text.TextWatcher
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,20 +20,6 @@ class ReadActivity : AppCompatActivity() {
 
     private var allProducts = ProductRepository.getAll().toMutableList()
 
-    private val createProductLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == RESULT_OK) {
-            val newProduct = result.data?.getParcelableExtra<Product>("new_product")
-            newProduct?.let {
-
-                ProductRepository.add(it)
-
-                refreshData()
-            }
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_read)
@@ -42,7 +27,7 @@ class ReadActivity : AppCompatActivity() {
         val btnPlus = findViewById<Button>(R.id.btnCreateProduct)
         btnPlus.setOnClickListener {
             val intent = Intent(this, CreateProductActivity::class.java)
-            createProductLauncher.launch(intent)
+            startActivity(intent)
         }
 
         val recyclerView = findViewById<RecyclerView>(R.id.rv_products)
@@ -67,6 +52,7 @@ class ReadActivity : AppCompatActivity() {
     }
 
     private fun refreshData() {
+
         allProducts = ProductRepository.getAll().toMutableList()
         adapter.updateList(allProducts)
         updateCount(allProducts.size)
@@ -78,7 +64,7 @@ class ReadActivity : AppCompatActivity() {
         } else {
             ProductRepository.getAll().filter { it.title.contains(query, ignoreCase = true) }
         }
-        adapter.updateList(filtered)
+        adapter.updateList(filtered.toMutableList())
         updateCount(filtered.size)
     }
 
